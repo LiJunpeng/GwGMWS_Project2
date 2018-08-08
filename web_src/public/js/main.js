@@ -17,8 +17,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
 /**
  * Fetch all neighborhoods and set their HTML.
  */
-fetchNeighborhoods = () => {
-  DBHelper.fetchNeighborhoods((error, neighborhoods) => {
+
+function fetchNeighborhoods () {
+    DBHelper.fetchNeighborhoods((error, neighborhoods) => {
     if (error) { // Got an error
       console.error(error);
     } else {
@@ -27,6 +28,30 @@ fetchNeighborhoods = () => {
     }
   });
 }
+
+// fetchNeighborhoods = function () {
+//     DBHelper.fetchNeighborhoods((error, neighborhoods) => {
+//     if (error) { // Got an error
+//       console.error(error);
+//     } else {
+//       self.neighborhoods = neighborhoods;
+//       fillNeighborhoodsHTML();
+//     }
+//   });
+// }
+
+
+
+// fetchNeighborhoods = () => {
+//   DBHelper.fetchNeighborhoods((error, neighborhoods) => {
+//     if (error) { // Got an error
+//       console.error(error);
+//     } else {
+//       self.neighborhoods = neighborhoods;
+//       fillNeighborhoodsHTML();
+//     }
+//   });
+// }
 
 /**
  * Set neighborhoods HTML.

@@ -1,6 +1,12 @@
 const gulp = require("gulp");
 const babel = require("gulp-babel");
 const del = require('del');
+const browserify = require('browserify');
+const babelify = require('babelify');
+const source = require('vinyl-source-stream');
+const buffer = require('vinyl-buffer');
+const sourcemaps = require('gulp-sourcemaps');
+const uglify = require('gulp-uglify');
 
 const file_src = "web_src";
 const file_dest = "build";
@@ -38,13 +44,53 @@ const build_css = () => {
         .pipe(gulp.dest(`${dirs.dest}/public/css`));
 }
 
-const build_scripts = () => {
-	return  gulp.src("web_src/public/js/*.js")
-		.pipe(babel({
-			presets: ['es2015']
-		}))
-		.pipe(gulp.dest(`${dirs.dest}/public/js`));
+// const build_scripts = () => {
+// 	return  gulp.src("web_src/public/js/*.js")
+// 		.pipe(babel({
+// 			presets: ['es2015']
+// 		}))
+// 		.pipe(gulp.dest(`${dirs.dest}/public/js`));
+// }
+
+
+
+const build_script = (filename) => {
+    return browserify(`${dirs.src}/public/js/${filename}`)
+        .transform('babelify')
+        .bundle()
+        .pipe(source(filename))
+        .pipe(buffer())
+        .pipe(sourcemaps.init({ loadMaps: true }))
+        .pipe(uglify())
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest(`${dirs.dest}/public/js`));
 }
+
+const build_script_index = () => build_script('index.js');
+const build_script_restaurant = () => build_script('main.js');
+const build_script_helper = () => build_script('dbhelper.js');
+
+const build_scripts = gulp.parallel(build_script_helper, build_script_index, build_script_restaurant);
+
+
+
+// const build_script = (filename) => {
+//     return browserify(`${dirs.src}/public/js/${filename}`)
+//         .transform('babelify')
+//         .bundle()
+//         .pipe(source(filename))
+//         .pipe(buffer())
+//         .pipe(sourcemaps.init({ loadMaps: true }))
+//         .pipe(uglify())
+//         .pipe(sourcemaps.write('./'))
+//         .pipe(gulp.dest(`${dirs.dest}/public/js`));
+// }
+
+// const build_script_index = () => build_script('index.js');
+// const build_script_restaurant = () => build_script('restaurant.js');
+
+// const build_scripts = gulp.parallel(build_script_index, build_script_restaurant);
+
 
 const copy_static = () => {
     return gulp.src([
