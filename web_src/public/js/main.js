@@ -1,5 +1,3 @@
-import idb from 'idb';
-
 let restaurants,
   neighborhoods,
   cuisines
@@ -18,16 +16,16 @@ document.addEventListener('DOMContentLoaded', (event) => {
  * Fetch all neighborhoods and set their HTML.
  */
 
-function fetchNeighborhoods () {
-    DBHelper.fetchNeighborhoods((error, neighborhoods) => {
-    if (error) { // Got an error
-      console.error(error);
-    } else {
-      self.neighborhoods = neighborhoods;
-      fillNeighborhoodsHTML();
-    }
-  });
-}
+// function fetchNeighborhoods () {
+//     DBHelper.fetchNeighborhoods((error, neighborhoods) => {
+//     if (error) { // Got an error
+//       console.error(error);
+//     } else {
+//       self.neighborhoods = neighborhoods;
+//       fillNeighborhoodsHTML();
+//     }
+//   });
+// }
 
 // fetchNeighborhoods = function () {
 //     DBHelper.fetchNeighborhoods((error, neighborhoods) => {
@@ -42,16 +40,16 @@ function fetchNeighborhoods () {
 
 
 
-// fetchNeighborhoods = () => {
-//   DBHelper.fetchNeighborhoods((error, neighborhoods) => {
-//     if (error) { // Got an error
-//       console.error(error);
-//     } else {
-//       self.neighborhoods = neighborhoods;
-//       fillNeighborhoodsHTML();
-//     }
-//   });
-// }
+fetchNeighborhoods = () => {
+  DBHelper.fetchNeighborhoods((error, neighborhoods) => {
+    if (error) { // Got an error
+      console.error(error);
+    } else {
+      self.neighborhoods = neighborhoods;
+      fillNeighborhoodsHTML();
+    }
+  });
+}
 
 /**
  * Set neighborhoods HTML.
