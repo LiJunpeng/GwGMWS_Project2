@@ -8,6 +8,6 @@
         "sizes": "72x72 96x96 128x128 192x192 256x256 512x512",
         "type": "image/svg"
     }],
-    "display": "standalone",
-    "start_url": "."
+    "display": "minimal-ui",
+    "start_url": "./index.html"
 }
