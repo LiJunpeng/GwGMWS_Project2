@@ -1,5 +1,5 @@
 const cacheName = 'restaurant_review_cache';
-
+console.log("dsfdsfss");
 self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(cacheName).then(function(cache) {
