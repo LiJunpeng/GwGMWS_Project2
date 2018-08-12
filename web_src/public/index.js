@@ -5,6 +5,12 @@ self.addEventListener('install', function(event) {
     caches.open(cacheName).then(function(cache) {
       return cache.addAll([
         'css/index.css',
+        'css/restaurant.css',
+        'index.html',
+        'restaurant.html',       
+        'js/index.js',
+        'css/index.css',
+        'js/restaurant_info.js',
         'css/restaurant.css'
       ]);
     })
@@ -14,22 +20,25 @@ self.addEventListener('install', function(event) {
 self.addEventListener('fetch', function(event) {
   console.log("fetch");
   event.respondWith(
-    caches.match(event.request).then(function(response) {
+    caches.match(event.request, {ignoreSearch: true}).then(function(response) {
+      console.log(event.request);
       if (response) {
         return response;
       } else {
 
       let fetchRequest = event.request.clone();
       return fetch(fetchRequest).then(function(response) {
-      	let result = response.clone();
+        let result = response.clone();
 
-      	caches.open(cacheName).then(function(cache) {
-      		cache.put(event.request, result);
-      	});
+        caches.open(cacheName).then(function(cache) {
+          cache.put(event.request, result);
+        });
 
-      	return response;
-      	});
+        return response;
+        });
       }
     })
   );
 });
+
+

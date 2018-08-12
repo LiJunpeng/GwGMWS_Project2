@@ -71,15 +71,7 @@
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCqN6bgL_3kcIi0dU2pUlQwVtFc5mKYvPo&libraries=places&callback=initMap"></script>
   <!-- End scripts -->
 
-  <script type="text/javascript">
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('index.js').then(function(registration) {
-        console.log("Service Worker registered");
-      }).catch(function(err) {
-        console.log('Failed to register Service Worker', err);
-      });
-    }
-  </script>
+  <script type="text/javascript" src="register_serviceworker.js"></script>
 
 </body>
 
