@@ -9,6 +9,12 @@ class DBHelper {
     return name;
   }
 
+  static get STORE_NAME () {
+    var storeName = "restaurantsStore";
+
+    return storeName;
+  }
+
   /**
    * Database URL.
    * Change this to restaurants.json file location on your server.
@@ -41,22 +47,38 @@ class DBHelper {
    */
   static fetchRestaurants(callback) {
     // open data base and check for data
-    var db = indexedDB.open(DBHelper.DATABASE_NAME, 1);
+    const db = indexedDB.open(DBHelper.DATABASE_NAME, 1);
 
     db.onsuccess=function(event){
         const db = event.target.result;
 
         // return existing result from db
-        // db.
+        const transaction = db.transaction(DBHelper.STORE_NAME,'readwrite'); 
+        const store = transaction.objectStore(DBHelper.STORE_NAME); 
+
+        store.getAll().onsuccess = function(event) {
+          const result = event.target.result;
+          if (result && result.length != 0) {
+            callback(null, result);
+          } else {
+            // in case it is the first for the user to open this website
+            DBHelper.fetchRestaurantsFromServer(callback);
+          }
+        };
+        
 
         // update db
-        DBHelper.fetchRestaurantsFromServer(function (error, restaurants) {
-          if (error == null) {
-            restaurants.forEach(function(restaurant) {
-              customerObjectStore.put(restaurant);
-            });
+        DBHelper.fetchRestaurantsFromServer(function (err, restaurants) {
+          if (err) {
+            console.log("DBHelper can't fetch data from server: " + err);
           } else {
-            console.log("DBHelper can't fetch data from server");
+            console.log(DBHelper.STORE_NAME);
+            var transaction = db.transaction(DBHelper.STORE_NAME,'readwrite'); 
+            var store = transaction.objectStore(DBHelper.STORE_NAME); 
+
+            restaurants.forEach(function(restaurant) {
+              store.put(restaurant);
+            });            
           }
         });
 
@@ -69,117 +91,14 @@ class DBHelper {
     db.onupgradeneeded = function(event) {
       const db = event.target.result;
 
-      let restaurantStore = db.createObjectStore("restaurantsStore", { keyPath: "id" });
+      let restaurantStore = db.createObjectStore(DBHelper.STORE_NAME, { keyPath: "id" });
       restaurantStore.createIndex("name", "name", { unique: true });
       restaurantStore.createIndex("neighborhood", "neighborhood", { unique: false });
 
       console.log("restaurantStore created");
 
-      // Create an objectStore to hold information about our customers. We're
-      // going to use "ssn" as our key path because it's guaranteed to be
-      // // unique - or at least that's what I was told during the kickoff meeting.
-      // var objectStore = db.createObjectStore("restaurants", { keyPath: "id" });
-
-      // // Create an index to search customers by name. We may have duplicates
-      // // so we can't use a unique index.
-      // objectStore.createIndex("name", "name", { unique: true });
-
-      // // Create an index to search customers by email. We want to ensure that
-      // // no two customers have the same email, so use a unique index.
-      // objectStore.createIndex("neighborhood", "neighborhood", { unique: false });
-
-      // // Use transaction oncomplete to make sure the objectStore creation is 
-      // // finished before adding data into it.
-      // objectStore.transaction.oncomplete = function(event) {
-      //   // Store values in the newly created objectStore.
-      //   var restaurantObjectStore = db.transaction("restaurants", "readwrite").objectStore("restaurants");
-      //   // customerData.forEach(function(customer) {
-      //   //   customerObjectStore.add(customer);
-      //   // });
-      //     restaurants.forEach(function(restaurant) {
-      //     restaurantObjectStore.add(restaurant);
-      //   });
-      //   console.log("sfsdf");
-      //   console.log(restaurants);
-      // };
     };
 
-
-
-
-
-
-
-    // if () {
-    //   // if already have data, return data directly and update database 
-
-
-    // } else {
-    //   // fetch data & store into db
-
-    // }
-
-
-
-
-    // ================
-    // fetch(DBHelper.DATABASE_URL)
-    //   .then(function (response) {
-    //     return response.json();
-    //   })
-    //   .then(function (restaurants) {
-        // save to db
-
-
-// var request = indexedDB.open(dbName, 2);
-
-// request.onerror = function(event) {
-//   // Handle errors.
-// };
-// request.onupgradeneeded = function(event) {
-//   var db = event.target.result;
-
-//   // Create an objectStore to hold information about our customers. We're
-//   // going to use "ssn" as our key path because it's guaranteed to be
-//   // unique - or at least that's what I was told during the kickoff meeting.
-//   var objectStore = db.createObjectStore("restaurants", { keyPath: "id" });
-
-//   // Create an index to search customers by name. We may have duplicates
-//   // so we can't use a unique index.
-//   objectStore.createIndex("name", "name", { unique: true });
-
-//   // Create an index to search customers by email. We want to ensure that
-//   // no two customers have the same email, so use a unique index.
-//   objectStore.createIndex("neighborhood", "neighborhood", { unique: false });
-
-//   // Use transaction oncomplete to make sure the objectStore creation is 
-//   // finished before adding data into it.
-//   objectStore.transaction.oncomplete = function(event) {
-//     // Store values in the newly created objectStore.
-//     var restaurantObjectStore = db.transaction("restaurants", "readwrite").objectStore("restaurants");
-//     // customerData.forEach(function(customer) {
-//     //   customerObjectStore.add(customer);
-//     // });
-//       restaurants.forEach(function(restaurant) {
-//       restaurantObjectStore.add(restaurant);
-//     });
-//     console.log("sfsdf");
-//     console.log(restaurants);
-//   };
-// };
-
-
-
-      //   callback(null, restaurants);
-      // })
-      // .catch(function (error) {
-      //   callback(error, null);
-      // });
-
-
-      // .then(response => response.json())
-      // .then(restaurants => callback(null, restaurants))
-      // .catch(error => callback(error, null));
   }
 
   /**
